@@ -1,7 +1,4 @@
-
-import createStore from 'react-auth-kit/createStore';
 import Form from './components/Log In/Form.jsx';
-import AuthProvider from 'react-auth-kit';
 import { Route, Routes } from 'react-router-dom';
 import RoleHome from './components/Role/RoleHome.jsx';
 import RoleProvider from './Context/roleContext.js';
@@ -10,19 +7,15 @@ import Sidebar from './components/Role/Rolesidebar.jsx';
 import Allrooms from './components/Role/Rooms/Allrooms.jsx';
 import Editeroom from './components/Role/Rooms/Editeroom.jsx';
 import Addnewroom from './components/Role/Rooms/Addnewroom.jsx';
+import LogInProvider from './Context/logInContext.js';
 
-const store = createStore({
-  authName:'_auth',
-  authType:'cookie',
-  cookieDomain: window.location.hostname,
-  cookieSecure: window.location.protocol === 'https:',
-});
+
 function App() {
 
 
   return (
     <div className="App ">
-<AuthProvider store={store}>
+      <LogInProvider>
 <RoleProvider>
   <Navbar/>
   <Routes>
@@ -33,7 +26,8 @@ function App() {
     <Route path='/addnewroom' element={<Addnewroom/>}/>
   </Routes>
   </RoleProvider>
-      </AuthProvider>
+  </LogInProvider>
+
 
     </div>
   );

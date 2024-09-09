@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
-import useSignIn from "react-auth-kit/hooks/useSignIn";
-import { jwtDecode } from "jwt-decode";
-import { replace, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import  "./form.css";
 import Swal from "sweetalert2";
+import { LoginContext } from "../../Context/logInContext";
 
 function Form() {
-  const signIn = useSignIn();
-  const [formData, setFormData] = React.useState({ email: "", password: "" });
-  const [role, setRole] = useState([]);
-  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] =useState({ email: "", password: "" });
+  const {logIn , setLogIn } = useContext(LoginContext);
+  
+  
+
+
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {
@@ -21,22 +23,10 @@ function Form() {
       .post("https://localhost:7015/siginin", formData)
 
       .then((res) => {
-        if (
-          signIn({
-            auth: {
-              token: res.data.token,
-              type: "Bearer",
-            },
-          })
-        ) {
-          navigate("/Home", { replace: true });
-        }
-
         Cookies.set("token", res.data.data.token, { expires: 0.25 });
-
-        let { role } = jwtDecode(JSON.stringify(res.data));
-        setRole(role);
-      })
+   setLogIn(true);
+          navigate("/Home", { replace: true });
+        })
       .catch((err) => {
         Swal.fire({
           title: "Error",
@@ -46,7 +36,7 @@ function Form() {
         });
       });
   };
-
+console.log(logIn)
   return (
     <>
       <form
