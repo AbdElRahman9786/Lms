@@ -12,7 +12,7 @@ function RoleProvider(props){
 
     useEffect(()=>{
      axios.get('https://localhost:7015/api/ClassRoom/All',config).then(res=>setRoom(res.data.data)).catch(err=>console.log(err))
-    },[]);
+    },[config]);
 
     return(
         <>
