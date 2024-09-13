@@ -10,18 +10,17 @@ import Cookies from "js-cookie";
 
 const Navbar = () => {
   const {logIn , setLogIn } = useContext(LoginContext);
-  useEffect(()=>{
-    setLogIn(true);
-  },[])
+ 
   return (
     <nav className="bg-blue-500 p-4 ">
       <div className="flex justify-between items-center">
         <Link to="/Home" className="text-white text-lg font-bold"><img className='w-[50px]' src={img} alt='img-logo' /></Link>
         
        {logIn&&   
+
        <ul className='flex justify-center text-white'>   
     <li className='mr-3'><Link to='/allrooms'>Get All Rooms</Link></li>
-    <li><Link to='/' className='hover:text-red-400 duration-300' onClick={()=>{setLogIn(!logIn)
+    <li><Link to='/' className='hover:text-red-400 duration-300' onClick={()=>{setLogIn(false)
       Cookies.remove('token')
     }}>LogOut  <FontAwesomeIcon icon={faRightFromBracket} /></Link></li>
     </ul>

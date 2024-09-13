@@ -4,7 +4,7 @@ import axios from "axios";
 import {  useState } from "react";
 
 function Editeroom() {
-    let { classroomId } = useParams();
+    let { roomNumber } = useParams();
     let token = Cookies.get('token');
     const [capacity, setCapacity] = useState('');
     let navigate=useNavigate();
@@ -27,7 +27,7 @@ function Editeroom() {
             return;
         }
 
-        axios.put(`https://localhost:7015/api/ClassRoom/${classroomId}/Capacity`, capacityValue, config)
+        axios.put(`https://localhost:7015/api/ClassRoom/${roomNumber}/Capacity`, capacityValue, config)
             .then((res) => {
                 
                 console.log(res);

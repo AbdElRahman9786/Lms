@@ -1,21 +1,24 @@
 import { useContext, useEffect, useState } from "react";
-import { roleContext } from "../../../Context/roleContext";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Loading from "../../Loading/Loading";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import Swal from "sweetalert2";
+import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { ButtonGroup } from "@mui/material";
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 
 function Allrooms() {
-  const [allrooms, setAllrooms] = useState([]);
   const [searchvalues, setSearchValues] = useState("");
   const [takenRooms, setTakenRooms] = useState([]);
   const [take,setTake] = useState(10);
+  const[more,setMore] = useState(true)
   const [skip, setSkip] = useState(0);
   const [loading, setLoading] = useState(false);
-  const room = useContext(roleContext);
   let token = Cookies.get("token");
   const config = {
     headers: {
@@ -25,7 +28,6 @@ function Allrooms() {
   };
 
   useEffect(() => {
-    setAllrooms(room);
     handelinitialdata();
     setLoading(true);
   
@@ -34,21 +36,27 @@ function Allrooms() {
   const handelinitialdata=()=>{
 axios.get(`https://localhost:7015/api/ClassRoom/All?take=10&skip=0`, config)
     .then((res) => {
-      
-       
-    setSkip(skip +10)
+      setSkip(skip +10)
+      if(res.data.data.length<10){
+        setMore(false)
+      }
       setTakenRooms(res.data.data)}).finally(()=>{setLoading(false)});
   }
+  console.log(more)
   function handelTakeandSkip(){
     setLoading(true)
+    
     axios
     .get(`https://localhost:7015/api/ClassRoom/All?take=${take}&skip=${skip}`, config)
-    .then((res) => {console.log(res)
+    .then((res) => {
       
+      if(res.data.data.length<10){
+        setMore(false)
+      }
     
-    setSkip(skip +10)
     
     setTakenRooms((prev)=>[...prev,...res.data.data]);
+    setSkip(skip +10)
   }
     
   ).catch((err) => {
@@ -58,12 +66,7 @@ axios.get(`https://localhost:7015/api/ClassRoom/All?take=10&skip=0`, config)
  
   }
 
-  function getAllRooms() {
-    axios
-      .get("https://localhost:7015/api/ClassRoom/All", config)
-      .then((res) => setTakenRooms(res.data.data))
-      .catch((err) => console.log(err));
-  }
+  
   function handelSearch(e) {
     e.preventDefault();
     setLoading(true)
@@ -82,12 +85,16 @@ axios.get(`https://localhost:7015/api/ClassRoom/All?take=10&skip=0`, config)
       )
       .catch((err) => console.log(err)).finally(()=>setLoading(false));
   }
-
-  function delteroom(id) {
+function handeldelete(){
+  axios.get(`https://localhost:7015/api/ClassRoom/All?take=${take}&skip=0`, config)
+  .then((res)=>setTakenRooms((prev)=>[...prev,...res.data.data]))
+}
+  function delteroom(roomNumber) {
+    setLoading(true);
     axios
-      .delete(`https://localhost:7015/api/ClassRoom/${id}`, config)
-      .then(() => getAllRooms())
-      .catch((err) => alert("this room can not be deleted"));
+      .delete(`https://localhost:7015/api/ClassRoom/${roomNumber}`, config)
+      .then(() =>{handeldelete()})
+      .catch((err) => alert("this room can not be deleted")).finally(()=>{setLoading(false)});
   }
   
   return (
@@ -147,18 +154,26 @@ axios.get(`https://localhost:7015/api/ClassRoom/All?take=10&skip=0`, config)
       <td className="px-6 py-4">{el.building}</td>
       <td className="px-6 py-4">{el.capacity}</td>
       <td className="px-6 py-4">
+      <ButtonGroup variant="contained">
         <Link
-          to={`editeroom/${el.classroomId}`}
-          className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+          to={`editeroom/${el.roomNumber}`}
+         
         >
-          Edit
+                  <Button  color="success" variant="contained"size="small" startIcon={<ModeEditIcon fontSize="small"/>}>
+  Edite
+</Button>
         </Link>
-        <button
+
+        {/* <button
           className="font-medium text-red-600 dark:text-blue-500 hover:underline ml-1"
-          onClick={() => delteroom(el.classroomId)}
+          onClick={() => delteroom(el.roomNumber)}
         >
           Delete
-        </button>
+        </button> */}
+        <Button onClick={() => delteroom(el.roomNumber)} color="error" variant="contained"size="small" startIcon={<DeleteIcon fontSize="small"/>}>
+  Delete
+</Button>
+</ButtonGroup>
       </td>
     </tr>
   ))
@@ -167,8 +182,8 @@ axios.get(`https://localhost:7015/api/ClassRoom/All?take=10&skip=0`, config)
         
           </tbody>
         </table>
-
-        <button className="text-center w-[100%]" onClick={()=>handelTakeandSkip()} >see more</button>
+{more?<button className="text-center w-[100%]" onClick={()=>handelTakeandSkip()} >see more</button>:<h1 className="text-center w-[100%]">no more data</h1>}
+        {/* <button className="text-center w-[100%]" onClick={()=>handelTakeandSkip()} >see more</button> */}
         </div>
       </div>
     </>

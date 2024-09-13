@@ -28,7 +28,7 @@ function Form() {
 
       .then((res) => {
         Cookies.set("token", res.data.data.token, { expires: 0.25 });
-   setLogIn(!logIn);
+   setLogIn(true);
           navigate("/Home", { replace: true });
         })
       .catch((err) => {
