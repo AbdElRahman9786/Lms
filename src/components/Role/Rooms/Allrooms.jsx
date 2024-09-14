@@ -10,6 +10,8 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ButtonGroup } from "@mui/material";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import SearchIcon from '@mui/icons-material/Search';
+import TextField from '@mui/material/TextField';
 
 
 function Allrooms() {
@@ -99,29 +101,33 @@ function handeldelete(){
   
   return (
     <>
-      <div className="mt-5   px-5">
-      <div className="container mx-auto">
+      <div className="  ">
+       
+      <div className="container p-10 col-span-10 sm:col-span-12">
         <form onSubmit={handelSearch} className="mb-9 w-1/2 mx-auto flex justify-center items-center">
-          <input
+          <TextField
             type="number"
             name="searchQuery"
             onChange={(e) => setSearchValues(e.target.value)}
-            className="mx-auto w-1/2 px-8 py-1  border-2 flex-1 "
-            placeholder="Enter search values"
+            size="small"
+            fullWidth
+            label="Enter search values"
           />
-          <button type="submit" className='bg-[#3b82f6]  px-3 py-1 '>
-          <FontAwesomeIcon icon={faSearch} className="text-white text-xl   " />
-          </button>
+          <Button type="submit" size="large" onSubmit={()=>handelSearch} variant="contained" color="info" >
+          <SearchIcon />
+          </Button>
          
         </form>
         <Link
           to="/addnewroom"
-          className="w-[50%] bg-[#0f47ad] text-white hover:bg-green-400 duration-200  block py-2 text-center mx-auto mb-10"
+          className="w-[50%]  text-white   block py-2 text-center mx-auto mb-10"
         >
+         <Button variant="contained" color="info" className="w-[100%]">
           Add
+         </Button>
         </Link>
 
-        <table className="max-w-[100%] w-full text-sm  text-gray-500 dark:text-gray-400 text-center table-fixed">
+        <table className=" w-[100%] text-sm mx-auto text-gray-500 dark:text-gray-400 text-center table-auto border-2 ">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
             
@@ -164,12 +170,6 @@ function handeldelete(){
 </Button>
         </Link>
 
-        {/* <button
-          className="font-medium text-red-600 dark:text-blue-500 hover:underline ml-1"
-          onClick={() => delteroom(el.roomNumber)}
-        >
-          Delete
-        </button> */}
         <Button onClick={() => delteroom(el.roomNumber)} color="error" variant="contained"size="small" startIcon={<DeleteIcon fontSize="small"/>}>
   Delete
 </Button>
@@ -183,7 +183,7 @@ function handeldelete(){
           </tbody>
         </table>
 {more?<button className="text-center w-[100%]" onClick={()=>handelTakeandSkip()} >see more</button>:<h1 className="text-center w-[100%]">no more data</h1>}
-        {/* <button className="text-center w-[100%]" onClick={()=>handelTakeandSkip()} >see more</button> */}
+       
         </div>
       </div>
     </>

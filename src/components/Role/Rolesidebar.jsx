@@ -1,17 +1,60 @@
-import { Link } from "react-router-dom";
+// 
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
 
-function Sidebar(){
-    return(
-        <>
-        <div className="h-[100%] bg-blue-500 text-center text-white px-3 py-5 relative">
-            <Link to="/roles/allrooms" className="hover:bg-[#fff] hover:rounded-lg hover:text-black duration-300 px-3 py-5 block "><h3>All Rooms</h3></Link>
-            <Link to="/roles/editroom" className="hover:bg-[#fff] hover:rounded-lg hover:text-black duration-300 px-3 py-5 block "><h3>Edit Room</h3></Link>
-            <Link to="/roles/addnewroom" className="hover:bg-[#fff] hover:rounded-lg hover:text-black duration-300 px-3 py-5 block "><h3>Add New Room</h3></Link>
-<button className="absolute bottom-0  text-center left-0 py-4 w-[100%] bg-[#ddd]  text-black hover:bg-red-500 duration-300">log out</button>
-        </div>
+export default function TemporaryDrawer() {
+  const [open, setOpen] = React.useState(false);
 
-       
-        </>
-    )
+  const toggleDrawer = (newOpen) => () => {
+    setOpen(newOpen);
+  };
+
+  const DrawerList = (
+    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+      <List>
+        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+
+  return (
+    <div>
+      <Button onClick={toggleDrawer(true)} className='fixed top-[50%]'>Open drawer</Button>
+      <Drawer open={open} onClose={toggleDrawer(false)}>
+        {DrawerList}
+      </Drawer>
+    </div>
+  );
 }
-export default Sidebar;
