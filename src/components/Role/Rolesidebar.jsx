@@ -10,38 +10,38 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+import SchoolIcon from '@mui/icons-material/School';
+import { Link } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
+import img from '../../Images/Computer Science NEW LOGO.png'
+
+
+
+
 
 export default function TemporaryDrawer() {
   const [open, setOpen] = React.useState(false);
-
+  
+const functions=[
+  {link:'/allrooms',text:'All Rooms',icon:<SchoolIcon color='primary' />},
+  {link:'/',text:'Log out',icon:<LogoutIcon color='error'/>}
+]
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      <img src={img} alt="image_log" className='w-16 mx-auto'/>
       <Divider />
       <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding>
+        {functions.map((el) => (
+          <ListItem key={el.link} disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                {el.icon}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={<Link to={el.link}>{el.text}</Link>} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -50,8 +50,8 @@ export default function TemporaryDrawer() {
   );
 
   return (
-    <div>
-      <Button onClick={toggleDrawer(true)} className='fixed top-[50%]'>Open drawer</Button>
+    <div className='fixed z-10 top-[50%]'>
+      <Button onClick={toggleDrawer(true)}  variant='contained' color='info'>Open drawer</Button>
       <Drawer open={open} onClose={toggleDrawer(false)}>
         {DrawerList}
       </Drawer>

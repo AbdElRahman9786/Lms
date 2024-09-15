@@ -9,11 +9,11 @@ import TemporaryDrawer from './Rolesidebar';
 function Home(){
     
     
-    const swiper = useSwiper();
+    
     return(
         <>
-        <div className="grid grid-cols-12 grid-rows-2  h-screen ">
-          <div className="sidebar col-span-1 row-span-2 ">
+        <div className="  h-screen ">
+          <div className="sidebar  ">
             <TemporaryDrawer/>
           </div>
           <div className="main col-span-11 py-5 px-5">
