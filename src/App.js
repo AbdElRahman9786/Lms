@@ -7,6 +7,7 @@ import Editeroom from './components/Role/Rooms/Editeroom.jsx';
 import Addnewroom from './components/Role/Rooms/Addnewroom.jsx';
 import LogInProvider from './Context/logInContext.js';
 import ResponsiveAppBar from './components/Navbar/NavBar.jsx';
+import AllCourses from './components/Role/Course/AllCourses.jsx';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
     <Route path='/allrooms' element={<Allrooms/>}/>
     <Route path='/allrooms/editeroom/:roomNumber' element={<Editeroom/>}/>
     <Route path='/addnewroom' element={<Addnewroom/>}/>
+    <Route path='/Allcourses' element={<AllCourses/>}/>
   </Routes>
 
   </LogInProvider>

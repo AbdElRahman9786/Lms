@@ -9,11 +9,11 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import SchoolIcon from '@mui/icons-material/School';
 import { Link } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
 import img from '../../Images/Computer Science NEW LOGO.png'
+import AbcIcon from '@mui/icons-material/Abc';
 
 
 
@@ -24,7 +24,10 @@ export default function TemporaryDrawer() {
   
 const functions=[
   {link:'/allrooms',text:'All Rooms',icon:<SchoolIcon color='primary' />},
+  {link:'/Allcourses',text:'All Courses',icon:<AbcIcon color='primary'/>},
   {link:'/',text:'Log out',icon:<LogoutIcon color='error'/>}
+
+
 ]
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
