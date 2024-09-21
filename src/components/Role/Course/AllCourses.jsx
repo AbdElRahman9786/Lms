@@ -71,6 +71,7 @@ function AllCourses() {
         setLoading(false); // Stop the loading spinner
       });
   }
+
   function handleEditName(id) {
     setLoading(true);
 
@@ -107,6 +108,7 @@ function AllCourses() {
     } else if (choose === "code") {
       handelediteCode(id);
     } else if (choose === "cridete") {
+      handelEditeCredits(id);
     } else if (choose === "department") {
     }
   }
@@ -121,6 +123,24 @@ function AllCourses() {
       .catch((err) => console.error(err));
     setSkip(skip + 10);
   };
+
+  function handelEditeCredits(id) {
+    setLoading(true);
+    const number = Number(editCourseName);
+
+    axios
+      .put(`https://localhost:7015/api/Course/${id}/Credits`, number, config)
+      .then(() =>
+        setData((prev) =>
+          prev.map((course) =>
+            course.courseId === id ? { ...course, credits: number } : course
+          )
+        )
+      )
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
+  }
+  
   const handleChange = (event) => {
     setChoose(event.target.value);
   };
@@ -220,7 +240,11 @@ function AllCourses() {
                         </Select>
                       </FormControl>
                       <TextField
-                        type="text"
+                        type={
+                          choose === "cridete" || choose === "department"
+                            ? "number"
+                            : "text"
+                        }
                         size="medium"
                         fullWidth
                         label="Enter edit value"
