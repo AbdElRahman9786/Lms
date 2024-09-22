@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function AllCourses() {
   const [data, setData] = useState([]);
@@ -25,8 +25,9 @@ function AllCourses() {
   const [loading, setLoading] = useState(true);
   const [editCourseName, seteditCourseName] = useState("");
   const [editingCourseId, setEditingCourseId] = useState(null);
-  const [courseCode, setCourseCode] = useState("");
   const [choose, setChoose] = useState("");
+  const [departmentId,setdepartmentId]=useState('');
+  const [Departments,setDepartments]=useState([]);
   const navigate = useNavigate();
   let token = Cookies.get("token");
   const config = {
@@ -101,6 +102,7 @@ function AllCourses() {
 
   useEffect(() => {
     getinitialdata();
+    getAllDepartments();
   }, []);
   function hanedlalledite(choose, id) {
     if (choose === "name") {
@@ -137,14 +139,34 @@ function AllCourses() {
           )
         )
       )
-      .catch((err) => console.log(err))
+      .catch((err) => alert(err))
       .finally(() => setLoading(false));
   }
-  
+
   const handleChange = (event) => {
     setChoose(event.target.value);
   };
-
+  function handelDepartmentEdite(CourseId, departmentId) {
+    setLoading(true);
+    axios
+      .put(
+        `https://localhost:7015/api/Course/${CourseId}/Deprtment`,
+        departmentId,
+        config
+      )
+      .then(() =>
+        setData((prev) =>
+          prev.map((course) =>
+            course.courseId === CourseId
+              ? { ...course, departmentId: departmentId }
+              : course
+          )
+        )
+      ).catch((error) =>alert(error)).finally(()=>setLoading(false))
+  }
+  function getAllDepartments(){
+    axios.get('https://localhost:7015/api/Department/All', config).then((res)=>setDepartments(res.data.data)).catch((err)=>console.error(err))
+  }
   return (
     <>
       <div className="allcourses grid grid-cols-12 grid-rows-12 gap-4 p-5">
@@ -196,8 +218,9 @@ function AllCourses() {
                     {`Course Code: ${el.courseCode}`}
                   </Typography>
                   <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    {`Course credits: ${el.credits}`}
+                    {`Course credits: ${el.credits}H`}
                   </Typography>
+                
 
                   <CardActions>
                     <ButtonGroup
@@ -212,6 +235,7 @@ function AllCourses() {
                       </Button>
                     </ButtonGroup>
                   </CardActions>
+                  <Link to={`/details/${el.courseCode}`} > show details</Link>
                 </CardContent>
 
                 {editingCourseId === el.courseId && (
@@ -239,6 +263,7 @@ function AllCourses() {
                           <MenuItem value={"department"}>department</MenuItem>
                         </Select>
                       </FormControl>
+                      {choose!=='department'&&
                       <TextField
                         type={
                           choose === "cridete" || choose === "department"
@@ -250,11 +275,23 @@ function AllCourses() {
                         label="Enter edit value"
                         onChange={(e) => seteditCourseName(e.target.value)}
                       />
+}
+                      {choose==='department'&&
+                      <Select native onClick={(e)=>setdepartmentId(e.target.value)}>
+                       {Departments.map((dep)=>(
+                        
+                          <option key={dep.departmentId} value={dep.departmentId} >
+                            {dep.departmentName}
+  
+                        </option>
+                       ))}
+                      </Select>
+}
                       <Button
                         type="submit"
                         variant="contained"
                         color="primary"
-                        onClick={() => hanedlalledite(choose, el.courseId)}
+                        onClick={() =>{choose==='department'?handelDepartmentEdite(el.courseId,departmentId) : hanedlalledite(choose, el.courseId)}}
                       >
                         Edit
                       </Button>

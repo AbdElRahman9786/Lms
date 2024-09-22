@@ -8,6 +8,7 @@ import Addnewroom from './components/Role/Rooms/Addnewroom.jsx';
 import LogInProvider from './Context/logInContext.js';
 import AllCourses from './components/Role/Course/AllCourses.jsx';
 import Guard from './components/Gurad.jsx';
+import { CourseDetails } from './components/Role/Course/CourseDetails.jsx';
 
 
 function App() {
@@ -42,6 +43,11 @@ function App() {
       <Guard>
       <AllCourses/>
       </Guard>
+      }/>
+      <Route path='/details/:courseCode' element={
+        <Guard>
+        <CourseDetails/>
+        </Guard>
       }/>
   </Routes>
 
