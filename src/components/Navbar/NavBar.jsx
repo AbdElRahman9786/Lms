@@ -1,7 +1,7 @@
 // src/components/Navbar.js
 import { useContext, useState } from 'react';
 import img from '../../Images/Computer Science NEW LOGO.png'
-import { Link } from 'react-router-dom';
+import { Link, NavLink, Outlet } from 'react-router-dom';
 import { Button, Container } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { LoginContext } from '../../Context/logInContext';
@@ -21,7 +21,7 @@ const {logIn}=useContext(LoginContext);
   {logIn && (
   <div className="links">
     <ul className="flex items-center space-x-5 sm:hidden">
-      <li><Link to='/'>Profile</Link></li>
+      <li><NavLink to='/Allrooms'>Allrooms</NavLink></li>
       <li><Link to='/'>Grades</Link></li>
       <li><Link to='/'>Profile</Link></li>
     </ul>
@@ -45,6 +45,7 @@ const {logIn}=useContext(LoginContext);
  
   </Container>
  </div>
+ <Outlet/>
  </>
   );
 };

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Loading from "../../Loading/Loading";
@@ -197,7 +197,9 @@ axios.get(`https://localhost:7015/api/ClassRoom/All?take=10&skip=0`, config)
 {more?<button className={`text-center w-[100%] ${loading&& 'invisible'}`} onClick={()=>handelTakeandSkip()} >see more</button>:<h1 className="text-center w-[100%]">no more data</h1>}
        
         </div>
+        
       </Container>
+      
     </>
   );
 }
