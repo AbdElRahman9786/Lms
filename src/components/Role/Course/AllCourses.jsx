@@ -19,6 +19,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Await, defer, Link, useLoaderData, useNavigate } from "react-router-dom";
 import { getinitialdata } from "./handelApi";
+import EditeCourse from "./EditeCourse";
 
 function AllCourses() {
   // const [data, setData] = useState([]);
@@ -29,6 +30,7 @@ function AllCourses() {
   // const [choose, setChoose] = useState("");
   // const [departmentId,setdepartmentId]=useState('');
   // const [Departments,setDepartments]=useState([]);
+  const [isOpen,setIsOpen]=useState(false);
   const navigate = useNavigate();
   let token = Cookies.get("token");
   const config = {
@@ -38,15 +40,7 @@ function AllCourses() {
       // Optional: Ensure the Content-Type is set if needed
     },
   };
-  // function getinitialdata() {
-  //   axios
-  //     .get(`https://localhost:7015/api/Course/All?take=10&skip=0`, config)
-  //     .then((res) => {
-  //       setData(res.data.data);
-  //       setLoading(false);
-  //     })
-  //     .catch((err) => console.error(err));
-  // }
+
 const loaderData=useLoaderData();
   // function handelediteCode(id) {
   //   setLoading(true);
@@ -57,7 +51,7 @@ const loaderData=useLoaderData();
   //       config
   //     )
   //     .then((res) => {
-  //       // Update the data locally after the API call succeeds
+  
   //       setData((prevData) =>
   //         prevData.map((course) =>
   //           course.courseId === id
@@ -84,7 +78,7 @@ const loaderData=useLoaderData();
   //       config // Config for headers (e.g., authorization)
   //     )
   //     .then((res) => {
-  //       // Update the data locally after the API call succeeds
+ 
   //       setData((prevData) =>
   //         prevData.map((course) =>
   //           course.courseId === id
@@ -195,14 +189,23 @@ const loaderData=useLoaderData();
                     Credits: {el.credits}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Department: {el.departmentName}
+                    Department: {el.departmentId}
                   </Typography>
                 </CardContent>
+                <CardActions>
+                  <ButtonGroup>
+                    <Button variant="contained" color="primary" onClick={()=>{setIsOpen(true)}}>Edite</Button>
+                    <Button variant="contained" color="error">Delete</Button>
+                  </ButtonGroup>
+                  </CardActions>
           </Card>
 </div>
           ))}
           </Await>
           </Suspense>
+{isOpen&&(
+  <EditeCourse  close={()=>setIsOpen(false)}/>
+)}
           </div>
     </>
   )}
