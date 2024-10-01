@@ -12,6 +12,8 @@ import LayOut from './components/LayOut.jsx';
 import  { loader } from './components/Role/Course/AllCourses.jsx';
 import Allrooms from'./components/Role/Rooms/Allrooms.jsx';
 import AllCourses from'./components/Role/Course/AllCourses.jsx'
+import EditeCourse from './components/Role/Course/EditeCourse.jsx';
+import AddNewCourse, { action } from './components/Role/Course/AddNewCourse.jsx';
 
 
 
@@ -31,6 +33,10 @@ const routes=createBrowserRouter(createRoutesFromElements(
   
   <AllCourses/>
   
+</Guard>} />
+
+<Route path='/addnew' action={action} element={<Guard>
+  <AddNewCourse/>
 </Guard>}/>
 
   </Route>

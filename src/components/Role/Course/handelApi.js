@@ -17,3 +17,4 @@ export async function getinitialdata() {
   
       return response.data.data;
   }
+

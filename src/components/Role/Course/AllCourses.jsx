@@ -7,6 +7,7 @@ import {
   Card,
   CardActions,
   CardContent,
+  CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
@@ -17,17 +18,19 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Await, defer, Link, useLoaderData, useNavigate } from "react-router-dom";
+import { Await, defer, Link, Outlet, useLoaderData, useNavigate } from "react-router-dom";
 import { getinitialdata } from "./handelApi";
 import EditeCourse from "./EditeCourse";
+import Loading from "../../Loading/Loading";
 
-function AllCourses() {
-  // const [data, setData] = useState([]);
-  // const [skip, setSkip] = useState(10);
-  // const [loading, setLoading] = useState(true);
-  // const [editCourseName, seteditCourseName] = useState("");
+function AllCourses({children}) {
+  const [data, setData] = useState([]);
+  const [skip, setSkip] = useState(10);
+  const [loading, setLoading] = useState(false);
+  const [editeValue, setediteValue] = useState("");
   // const [editingCourseId, setEditingCourseId] = useState(null);
-  // const [choose, setChoose] = useState("");
+  const [choose, setChoose] = useState("");
+  const [courseId, setCourseId] =useState(0)
   // const [departmentId,setdepartmentId]=useState('');
   // const [Departments,setDepartments]=useState([]);
   const [isOpen,setIsOpen]=useState(false);
@@ -42,31 +45,32 @@ function AllCourses() {
   };
 
 const loaderData=useLoaderData();
-  // function handelediteCode(id) {
-  //   setLoading(true);
-  //   axios
-  //     .put(
-  //       `https://localhost:7015/api/Course/${id}/code`,
-  //       editCourseName,
-  //       config
-  //     )
-  //     .then((res) => {
+
+  function handelediteCode(id) {
+    setLoading(true);
+    axios
+      .put(
+        `https://localhost:7015/api/Course/${id}/code`,
+         editeValue,
+        config
+      )
+      .then((res) => {
   
-  //       setData((prevData) =>
-  //         prevData.map((course) =>
-  //           course.courseId === id
-  //             ? { ...course, courseCode: editCourseName } // Replace with the updated course name
-  //             : course
-  //         )
-  //       );
-  //     })
-  //     .catch((err) => {
-  //       alert(err); // Handle error
-  //     })
-  //     .finally(() => {
-  //       setLoading(false); // Stop the loading spinner
-  //     });
-  // }
+        setData((prevData) =>
+          prevData.map((course) =>
+            course.courseId === id
+              ? { ...course, courseCode: editeValue } 
+              : course
+          )
+        );
+      })
+      .catch((err) => {
+        alert(err); // Handle error
+      })
+      .finally(() => {
+        setLoading(false); // Stop the loading spinner
+      });
+  }
 
   // function handleEditName(id) {
   //   setLoading(true);
@@ -99,28 +103,20 @@ const loaderData=useLoaderData();
     
   //   getAllDepartments();
   // }, []);
-  // function hanedlalledite(choose, id) {
-  //   if (choose === "name") {
-  //     handleEditName(id);
-  //   } else if (choose === "code") {
-  //     handelediteCode(id);
-  //   } else if (choose === "cridete") {
-  //     handelEditeCredits(id);
-  //   } 
-  // }
-  // const handleLoadMore = () => {
-  //   setLoading(true);
-  //   axios
-  //     .get(`https://localhost:7015/api/Course/All?take=10&skip=${skip}`, config)
-  //     .then((res) => {
-  //       setData([...data, ...res.data.data]);
-  //       setLoading(false);
-  //     })
-  //     .catch((err) => {alert(err)
-  //       setLoading(false);
-  //     } );
-  //   setSkip(skip + 10);
-  // };
+
+  const handleLoadMore = () => {
+    setLoading(true);
+    axios
+      .get(`https://localhost:7015/api/Course/All?take=10&skip=${skip}`, config)
+      .then((res) => {
+        setData((prev)=>[...prev,...res.data.data]);
+        setSkip(skip+10);
+      })
+      .catch((err) => {alert(err)
+        
+      } ).finally(()=>setLoading(false));
+    
+  };
 
   // function handelEditeCredits(id) {
   //   setLoading(true);
@@ -138,10 +134,20 @@ const loaderData=useLoaderData();
   //     .catch((err) => alert(err))
   //     .finally(() => setLoading(false));
   // }
-
-  // const handleChange = (event) => {
-  //   setChoose(event.target.value);
-  // };
+  console.log(choose)
+  function hanedlalledite(choose, id) {
+    if (choose === "name") {
+      // handleEditName(id);
+    } else if (choose === "code") {
+      handelediteCode(id);
+      
+    } else if (choose === "cridete") {
+      // handelEditeCredits(id);
+    } 
+  }
+  const handleChange = (event) => {
+    setChoose(event.target.value);
+  };
   // function handelDepartmentEdite(CourseId, departmentId) {
   //   setLoading(true);
   //   axios
@@ -163,13 +169,22 @@ const loaderData=useLoaderData();
   // function getAllDepartments(){
   //   axios.get('https://localhost:7015/api/Department/All', config).then((res)=>setDepartments(res.data.data)).catch((err)=>console.error(err))
   // }
+  function  getId(id){
+    setCourseId(id);
+   
+  }
+
+
   return (
-    <>
+    <>  <Link to='/addnew'><Button variant="contained" color="secondary">Add new Course</Button></Link>
       <div className="allcourses grid grid-cols-12 grid-rows-12 gap-4 p-5">
-         <Suspense fallback={<p>Loading..</p>}>
+       
+         <Suspense fallback={<Loading/>}>
          <Await resolve={loaderData.Courses} errorElement={<p>Erorr loading posts</p>}>
-         {(loadedCourses)=>
-          loadedCourses.map((el) => (
+         { (loadedCourses)=>{
+          
+const alldata=[...loadedCourses,...data]
+    return    alldata.map((el) => (
             <div
               className="col-span-4 sm:col-span-12 row-span-4"
               key={el.courseId}
@@ -194,19 +209,25 @@ const loaderData=useLoaderData();
                 </CardContent>
                 <CardActions>
                   <ButtonGroup>
-                    <Button variant="contained" color="primary" onClick={()=>{setIsOpen(true)}}>Edite</Button>
+                    <Button variant="contained" color="primary" onClick={()=>{setIsOpen(true) 
+                      getId(el.courseId)}}>Edite</Button>
                     <Button variant="contained" color="error">Delete</Button>
                   </ButtonGroup>
+                  
                   </CardActions>
           </Card>
 </div>
-          ))}
+          ))}}
           </Await>
           </Suspense>
 {isOpen&&(
-  <EditeCourse  close={()=>setIsOpen(false)}/>
+  <EditeCourse setIsOpen={setIsOpen} choose={choose} setChoose={setChoose} setediteValue={setediteValue} hanedlalledite={hanedlalledite} courseId={courseId}/>
 )}
           </div>
+          <div className="w-[100%] flex justify-center items-center ">
+          {loading?(<CircularProgress color="secondary" />):(<Button variant="outlined" color="info" onClick={()=>handleLoadMore()}>Load More</Button>)}
+          </div>
+         
     </>
   )}
 
