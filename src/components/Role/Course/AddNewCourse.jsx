@@ -1,30 +1,37 @@
-import React, { useState } from 'react';
-import { Box, TextField, Button, Typography } from '@mui/material';
-import { Form, redirect } from 'react-router-dom';
-import axios from 'axios';
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Alert,
+  AlertTitle,
+} from "@mui/material";
+import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
+import axios from "axios";
 import Cookies from "js-cookie";
 
 function AddNewCourse() {
-
+  const actionData = useActionData();
+  const navigation = useNavigation();
+  console.log(actionData);
 
   return (
-    <Box 
+    <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
+        display: "flex",
+        flexDirection: "column",
         maxWidth: 500,
-        margin: '0 auto',
+        margin: "0 auto",
         padding: 2,
         boxShadow: 3,
         borderRadius: 2,
-        backgroundColor: 'white'
+        backgroundColor: "white",
       }}
     >
       <Typography variant="h4" gutterBottom align="center">
         Add New Course
       </Typography>
-      <Form method='post' action='Allcourses'>
-        {/* Course Name Field */}
+      <Form method="post" action="/addnew">
         <TextField
           label="Course Name"
           name="courseName"
@@ -33,7 +40,6 @@ function AddNewCourse() {
           required
         />
 
-        {/* Course Description Field */}
         <TextField
           label="courseCode"
           name="courseCode"
@@ -44,7 +50,6 @@ function AddNewCourse() {
           required
         />
 
-        {/* Course Duration Field */}
         <TextField
           label="Course credits (in hours)"
           name="credits"
@@ -53,7 +58,7 @@ function AddNewCourse() {
           margin="normal"
           required
         />
-               <TextField
+        <TextField
           label="Course departmentId "
           name="departmentId"
           type="number"
@@ -61,16 +66,14 @@ function AddNewCourse() {
           margin="normal"
           required
         />
-
-        {/* Submit Button */}
-        <Button 
+        <Button
           type="submit"
           variant="contained"
           color="primary"
           fullWidth
           sx={{ marginTop: 2 }}
         >
-          Add Course
+          {navigation.state === "submitting" ? "submitting..." : "AddCourse"}
         </Button>
       </Form>
     </Box>
@@ -78,40 +81,44 @@ function AddNewCourse() {
 }
 
 export default AddNewCourse;
-  
+
 export const action = async ({ request }) => {
-    const data = await request.formData();
-    
-    // Create the course submission object
-    const submission = {
-      courseName: data.get('courseName'),
-      courseCode: data.get('courseCode'),
-      credits: Number(data.get('credits')),
-      departmentId: Number(data.get('departmentId')),
-    };
-  
-    try {
-        let token = Cookies.get("token");
-        const config = {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-              // Optional: Ensure the Content-Type is set if needed
-            },
-          };
-      // Send the data to your API
-      const response = await axios.post('https://localhost:7015/api/Course',submission,config );
-  
-      // Check if the request was successful
-      if (!response.ok) {
-        throw new Error('Failed to submit course');
-      }
-  
-      // If successful, redirect to the AllCourses page
-      return redirect('/Allcourses');
-    } catch (error) {
-      console.error('Error:', error);
-      // Handle the error appropriately (e.g., show error message or log it)
-      return { error: error.message };
-    }
+  const data = await request.formData();
+
+  // Create the course submission object
+  const submission = {
+    courseName: data.get("courseName"),
+    courseCode: data.get("courseCode"),
+    credits: Number(data.get("credits")),
+    departmentId: Number(data.get("departmentId")),
   };
+
+  try {
+    let token = Cookies.get("token");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        // Optional: Ensure the Content-Type is set if needed
+      },
+    };
+    // Send the data to your API
+    const request = await axios.post(
+      "https://localhost:7015/api/Course",
+      submission,
+      config
+    );
+
+    // Check if the request was successful
+    if (request.status === 201) {
+      return redirect("/Allcourses");
+    }
+  } catch (error) {
+    return (
+      <Alert severity="error">
+        <AlertTitle>Error!</AlertTitle>
+        {error.message}
+      </Alert>
+    );
+  }
+};

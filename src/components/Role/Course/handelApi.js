@@ -12,7 +12,7 @@ const config = {
   };
 
 export async function getinitialdata() {
-  const response= await  axios.get(`https://localhost:7015/api/Course/All?take=10&skip=0`, config)
+  const response= await  axios.get(`https://localhost:7015/api/Course/All`, config)
      
   
       return response.data.data;

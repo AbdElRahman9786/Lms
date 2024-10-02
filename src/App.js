@@ -38,7 +38,9 @@ const routes=createBrowserRouter(createRoutesFromElements(
 <Route path='/addnew' action={action} element={<Guard>
   <AddNewCourse/>
 </Guard>}/>
-
+<Route path='/EditeCourse/:id' action={action} element={<Guard>
+  <EditeCourse/>
+</Guard>}/>
   </Route>
 ))
 
