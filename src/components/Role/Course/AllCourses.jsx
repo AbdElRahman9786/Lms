@@ -64,10 +64,10 @@ function AllCourses() {
         <Suspense fallback={<Loading />}>
           <Await
             resolve={loaderData.Courses}
-            errorElement={<p>Erorr loading posts</p>}
+            errorElement={<p>Erorr loading Courses</p>}
           >
-            {(loadedCourses) => {
-              const alldata = [...loadedCourses, ...data];
+            { (loadedCourses) => {
+              const  alldata = [...loadedCourses, ...data];
               return alldata.map((el) => (
                 <div
                   className="col-span-4 sm:col-span-12 row-span-4"

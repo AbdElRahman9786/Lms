@@ -13,7 +13,7 @@ import Cookies from "js-cookie";
 function AddNewCourse() {
   const actionData = useActionData();
   const navigation = useNavigation();
-  console.log(actionData);
+
 
   return (
     <Box

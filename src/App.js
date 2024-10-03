@@ -9,8 +9,8 @@ import LogInProvider from './Context/logInContext.js';
 import Guard from './components/Gurad.jsx';
 import { CourseDetails } from './components/Role/Course/CourseDetails.jsx';
 import LayOut from './components/LayOut.jsx';
-import  { loader } from './components/Role/Course/AllCourses.jsx';
-import Allrooms from'./components/Role/Rooms/Allrooms.jsx';
+import  { loader as coursesLoader } from './components/Role/Course/AllCourses.jsx';
+import Allrooms, { deleteCourseAction, loader as roomsLoader } from'./components/Role/Rooms/Allrooms.jsx';
 import AllCourses from'./components/Role/Course/AllCourses.jsx'
 import EditeCourse from './components/Role/Course/EditeCourse.jsx';
 import AddNewCourse, { action } from './components/Role/Course/AddNewCourse.jsx';
@@ -24,12 +24,12 @@ const routes=createBrowserRouter(createRoutesFromElements(
     <Route path='/Home' element={<Guard>
       <RoleHome/>
     </Guard>}/>
-<Route path='/allrooms'  element={<Guard>
+<Route path='/allrooms' loader={roomsLoader}  element={<Guard>
   
   <Allrooms/>
  
 </Guard>}/>
-<Route path='/Allcourses' loader={loader} element={<Guard>
+<Route path='/Allcourses' loader={coursesLoader} element={<Guard>
   
   <AllCourses/>
   
@@ -41,6 +41,7 @@ const routes=createBrowserRouter(createRoutesFromElements(
 <Route path='/EditeCourse/:id' action={action} element={<Guard>
   <EditeCourse/>
 </Guard>}/>
+<Route path="/course/:roomNumber/delete" action={deleteCourseAction} />
   </Route>
 ))
 
