@@ -14,7 +14,7 @@ const {logIn}=useContext(LoginContext);
   return (
  <>
  <div className="navbar bg-[#910029] text-white sticky top-0 py-4 z-20 ">
-  <Container className='flex justify-between items-center'>
+  <div className='flex justify-between items-center container mx-auto px-20 sm:p-2'>
   <div className="logo">
     <img src={img} alt="image_logo" className='w-14' />
   </div>
@@ -43,7 +43,7 @@ const {logIn}=useContext(LoginContext);
 )}
 
  
-  </Container>
+  </div>
  </div>
  <Outlet/>
  </>

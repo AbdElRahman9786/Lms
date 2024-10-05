@@ -10,6 +10,8 @@ import 'aos/dist/aos.css';
 import 'swiper/css/autoplay'
 import TemporaryDrawer from './Rolesidebar';
 import { useEffect } from 'react';
+import ourfaculty from '../../Images/ourfaculty.jpeg'
+import logo from '../../Images/Computer Science NEW LOGO.png'
 
 
 function Home(){
@@ -26,7 +28,7 @@ function Home(){
           <div className="sidebar">
             <TemporaryDrawer/>
           </div>
-          <div className="main col-span-11">
+          <div className="main col-span-11 px-20 sm:px-2 ">
             
           <Swiper
   spaceBetween={30}
@@ -51,18 +53,33 @@ function Home(){
 </Swiper>
 
             </div>
-            <div className="aboutUs mt-5 p-5 overflow-hidden " data-aos='fade-up'>
-            <h2 className='text-center w-[400px] sm:w-[150px] sm:text-2xl mx-auto pb-4 text-[#910029] font-semibold text-7xl mb-5 border-b-2 border-[#910029] '>About Us</h2>
+            <div className="aboutUs mt-5  overflow-hidden container mx-auto px-20 sm:px-2" data-aos='fade-up'>
+            <h2 className='text-center sm:text-2xl mx-auto pb-4 relative text-[#910029] font-semibold text-7xl mb-5 after:absolute after:w-[20%] after:h-1 after:bg-[#910029] after:bottom-0 after:left-1/2 after:transform after:-translate-x-1/2 after:content-[""]'>
+  About Us
+</h2>
+
               
-              <div className='grid grid-cols-12 sm:grid-cols-2 sm:grid-rows-2 md:grid-cols-4 gap-5 mt-10 mx-auto '>
-              <div className='col-span-4 sm:col-span-3 md:col-span-2 md:row-span-1 'data-aos='fade-right'>
-                <img src={img2} alt='logo'/>
+              <div className='flex justify-between mt-10 flex-wrap md:flex-col md:justify-center md:items-center '>
+              <div className='w-[30%] md:w-full'data-aos='fade-right'>
+                <img src={img2} alt='logo' className='rounded-md h-full'/>
               </div>
-              <div className='bg-[#910029] col-span-8 sm:col-span-3 md:col-span-2' data-aos='fade-left'>
+              <div className='bg-[#910029] w-[60%] md:w-full rounded-md' data-aos='fade-left'>
               
-              <p className='sm:truncate  max-w-full p-5 leading-8 font-semibold text-white text-2xl'>Al-Ahram Canadian University <br/> is a private university in 6th of October City, Egypt. It was established by Al-Ahram Egyptian daily newspaper.<br></br> It includes a Faculty of Pharmacy, School of Business, Faculty of Computer and Information Technology,<br/> Faculty of Mass Communication, Faculty of Oral and Dental Medicine and Faculty of Engineering.</p>
+              <p className=' max-w-full p-5 leading-8 font-semibold text-white text-2xl  sm:text-sm sm:p-1'>Al-Ahram Canadian University <br/> is a private university in 6th of October City, Egypt. It was established by Al-Ahram Egyptian daily newspaper.<br></br> It includes a Faculty of Pharmacy, School of Business, Faculty of Computer and Information Technology,<br/> Faculty of Mass Communication, Faculty of Oral and Dental Medicine and Faculty of Engineering.</p>
               </div>
              
+              </div>
+            </div>
+            <div className="ourfaculty " data-aos="fade-right">
+              <h2 className='text-center sm:text-2xl mx-auto pb-4 relative text-[#910029] font-semibold text-7xl mb-5 after:absolute after:w-[20%] after:h-1 after:bg-[#910029] after:bottom-0 after:left-1/2 after:transform after:-translate-x-1/2 after:content-[""] mt-20'>OUR FUCALTY</h2>
+              <div className='flex mt-10 px-20 sm:flex-col sm:px-2'>
+              <div className='bg-[#910029] w-[30%] sm:w-full p-5'>
+                <p className='text-5xl text-white'>Faculty Of Computer Science and Information Technology.</p>
+                <img src={logo} alt='logo/img' className='w-20 mt-4'/>
+              </div>
+              <div>
+                <img src={ourfaculty} alt='faculty/image'/>
+              </div>
               </div>
             </div>
         </div>

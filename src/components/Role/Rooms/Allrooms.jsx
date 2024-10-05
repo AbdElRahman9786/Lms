@@ -87,7 +87,7 @@ const loaderData=useLoaderData();
 
        
       <div className="p-10  ">
-        <form onSubmit={handelSearch} className="mb-9 w-1/2 mx-auto flex justify-center items-center">
+        <form onSubmit={handelSearch} className="mb-9 w-1/2 mx-auto flex justify-center items-center ">
           <TextField
             type="number"
             name="searchQuery"
@@ -110,7 +110,7 @@ const loaderData=useLoaderData();
          </Button>
         </Link>
         <div className="overflow-x-auto">
-  <table className="table-fixed w-full border-collapse bg-white shadow-lg">
+  <table className="table-auto w-full border-collapse bg-white shadow-lg">
     <thead>
       <tr className="bg-gray-200 text-gray-700">
         <th className="px-4 py-2 border border-gray-300">Room Number</th>

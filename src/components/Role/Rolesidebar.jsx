@@ -54,7 +54,7 @@ const functions=[
 
   return (
     <div className='fixed z-10 top-[50%]'>
-      <Button onClick={toggleDrawer(true)}  variant='contained' color='info'>Open drawer</Button>
+      <Button onClick={toggleDrawer(true)}  variant='contained' color='error'>Open drawer</Button>
       <Drawer open={open} onClose={toggleDrawer(false)}>
         {DrawerList}
       </Drawer>
