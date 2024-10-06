@@ -10,7 +10,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import SchoolIcon from '@mui/icons-material/School';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
 import img from '../../Images/Computer Science NEW LOGO.png'
 import AbcIcon from '@mui/icons-material/Abc';
@@ -44,7 +44,7 @@ const functions=[
               <ListItemIcon>
                 {el.icon}
               </ListItemIcon>
-              <ListItemText primary={<Link to={el.link}>{el.text}</Link>} />
+              <ListItemText primary={<NavLink to={el.link}>{el.text}</NavLink>} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -54,7 +54,7 @@ const functions=[
 
   return (
     <div className='fixed z-10 top-[50%]'>
-      <Button onClick={toggleDrawer(true)}  variant='contained' color='info'>Open drawer</Button>
+      <Button onClick={toggleDrawer(true)}  variant='contained' color='error'>Open drawer</Button>
       <Drawer open={open} onClose={toggleDrawer(false)}>
         {DrawerList}
       </Drawer>

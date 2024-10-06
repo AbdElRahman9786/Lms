@@ -2,11 +2,13 @@ import {  useNavigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 import axios from "axios";
 import {  useState } from "react";
+import Loading from "../../Loading/Loading";
 
 function Editeroom() {
     let { roomNumber } = useParams();
     let token = Cookies.get('token');
     const [capacity, setCapacity] = useState('');
+    const [loading,setLoading] = useState(false);
     let navigate=useNavigate();
     const config = {
         headers: { 
@@ -26,6 +28,7 @@ function Editeroom() {
             console.error('Invalid capacity value');
             return;
         }
+        setLoading(true); // Show a loading spinner while waiting for the API response
 
         axios.put(`https://localhost:7015/api/ClassRoom/${roomNumber}/Capacity`, capacityValue, config)
             .then((res) => {
@@ -38,23 +41,28 @@ function Editeroom() {
             .catch(error => {
                 console.error('There was an error updating the capacity!', error);
                 // Optionally handle errors, e.g., show an error message
-            });
+            }).finally(()=>setLoading(false));
     }
 
  
 
     return (
         <>
-            <form onSubmit={EditCapacity}>
-                <input 
-                    type="number" 
-                    placeholder="Enter new capacity" 
-                    name="capacity" 
-                    value={capacity} // Add value to control the input
-                    onChange={(e) => setCapacity(e.target.value)}
-                />
-                <button type="submit" >Edit</button>
-            </form>
+        {!loading?(
+ <form onSubmit={EditCapacity} >
+ <input 
+     type="number" 
+     placeholder="Enter new capacity" 
+     name="capacity" 
+     value={capacity} // Add value to control the input
+     onChange={(e) => setCapacity(e.target.value)}
+ />
+ <button type="submit" >Edit</button>
+</form>
+        ):(
+            <Loading/>
+        )}
+           
             
         </>
     );

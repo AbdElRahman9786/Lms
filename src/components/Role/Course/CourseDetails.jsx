@@ -11,7 +11,7 @@ export const CourseDetails = () => {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
-      // Optional: Ensure the Content-Type is set if needed
+      
     },
   };
   useEffect(()=>{
