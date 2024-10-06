@@ -6,14 +6,17 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import LogInProvider from './Context/logInContext';
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     
-    <LogInProvider>
+    
+      <BrowserRouter>
+      <LogInProvider>
     <App />
     </LogInProvider>
+    </BrowserRouter>
+    
     
     
   </React.StrictMode>

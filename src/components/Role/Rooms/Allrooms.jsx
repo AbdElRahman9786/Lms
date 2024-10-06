@@ -11,14 +11,14 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import { getinitialdata } from "./hadelApi";
+import { useQuery } from "@tanstack/react-query";
 
 
 function Allrooms() {
   const [searchvalues, setSearchValues] = useState("");
   const [takenRooms, setTakenRooms] = useState([]);
   const[more,setMore] = useState(true)
-  const [skip, setSkip] = useState(10);
-  const [loading, setLoading] = useState(false);
+  const [skip, setSkip] = useState(0);
   let token = Cookies.get("token");
   const config = {
     headers: {
@@ -26,38 +26,23 @@ function Allrooms() {
       // Optional: Ensure the Content-Type is set if needed
     },
   };
-const loaderData=useLoaderData();
+
  const navigate=useNavigate();
- const fetcher = useFetcher();
-  const navigation=useNavigation();
 
-  function loadeMore(){
-    setLoading(true)
-    
-    axios
-    .get(`https://localhost:7015/api/ClassRoom/All?take=10&skip=${skip}`, config)
-    .then((res) => {
-      
-      if(res.data.data.length<10){
-        setMore(false)
-      }
-    
-    
-    setTakenRooms((prev)=>[...prev,...res.data.data]);
-    setSkip(skip +10)
-  }
-    
-  ).catch((err) => {
-    
-  alert('Error: ' + err.message);
-  }).finally(()=>setLoading(false))
- 
-  }
 
-  
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ['rooms'],
+    queryFn: getinitialdata,
+  })
+  if(isPending){
+    return <Loading />;
+  }
+  if(isError){
+    return <p>Error: {error.message}</p>;
+  }
   function handelSearch(e) {
     e.preventDefault();
-    setLoading(true)
+    
     axios
       .get(
         `https://localhost:7015/api/ClassRoom/Search?searchQuery=${searchvalues}`,
@@ -71,15 +56,10 @@ const loaderData=useLoaderData();
         
         
       )
-      .catch((err) => console.log(err)).finally(()=>setLoading(false));
+      .catch((err) => console.log(err));
   }
 
-  const handleDelete = (roomNumber) => {
-    if (window.confirm('Are you sure you want to delete this course?')) {
-      fetcher.submit(null, { method: 'delete', action: `/course/${roomNumber}/delete` });
-    }
-   
-  };
+
   
   return (
     <>
@@ -120,32 +100,34 @@ const loaderData=useLoaderData();
       </tr>
     </thead>
     <tbody>
-      <Suspense fallback={<Loading />}>
-        <Await resolve={loaderData.rooms} errorElement={<p>Error loading rooms</p>}>
-          {(loadedRooms) => {
-            const allrooms=[...loadedRooms,...takenRooms]
-            return allrooms.map((room) => (
-              <tr key={room.roomNumber} className="text-center even:bg-gray-100 odd:bg-white hover:bg-gray-50">
+      
+          {
+            
+             data.map((room)=>{
+              return(
+                <tr className="text-center even:bg-gray-100 odd:bg-white hover:bg-gray-50" key={room.roomNumber}>
                 <td className="px-4 py-2 border border-gray-300">{room.roomNumber}</td>
                 <td className="px-4 py-2 border border-gray-300">{room.building}</td>
                 <td className="px-4 py-2 border border-gray-300">{room.capacity}</td>
                 <td className="px-4 py-2 border border-gray-300">
                   <Button variant="contained" startIcon={<ModeEditIcon/>} color="primary">Edite</Button>
-                  <Button variant="contained" startIcon={<DeleteIcon/>} color="error" onClick={()=>handleDelete(room.roomNumber)}>{navigation.state==='submitting'?<CircularProgress/>:'Delete'} </Button>
+                  <Button variant="contained" startIcon={<DeleteIcon/>} color="error" >delete </Button>
                   </td>
               </tr>
-            ));
-          }}
-        </Await>
-      </Suspense>
+              )
+             })
+            }            
+
+          
+      
     </tbody>
   </table>
 </div>
 
 <div className="w-full p-5 flex justify-center items-center">
-     {loading?(<CircularProgress color="secondary" />):( 
-        <Button variant="contained" color="secondary" onClick={()=>loadeMore()}>seeMore</Button>
-       )} 
+     
+        <Button variant="contained" color="secondary">seeMore</Button>
+       
        </div>
         </div>
         
@@ -156,27 +138,4 @@ const loaderData=useLoaderData();
 }
 export default Allrooms;
 
-export function loader(){
-  return defer({rooms:getinitialdata()})
-}
 
-export  async function deleteCourseAction({params}){
-  let token = Cookies.get("token");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      // Optional: Ensure the Content-Type is set if needed
-    },
-  };
-  try{
-  const { roomNumber } = params;
-
- await axios
-  .delete(`https://localhost:7015/api/ClassRoom/${roomNumber}`, config)
-  return redirect('/allrooms')
-  }catch(err){
-    console.error('Error deleting course:', err);
-    // Handle error, maybe return an error message or redirect
-    return { error: 'Failed to delete the course' };
-  }
-}

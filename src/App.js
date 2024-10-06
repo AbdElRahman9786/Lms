@@ -18,75 +18,58 @@ import AddNewCourse, { action } from './components/Role/Course/AddNewCourse.jsx'
 
 
 function App() {
-const routes=createBrowserRouter(createRoutesFromElements(
-  <Route path='/' element={<LayOut/>}>
-    <Route index element={<Form/>}/>
-    <Route path='/Home' element={<Guard>
-      <RoleHome/>
-    </Guard>}/>
-<Route path='/allrooms' loader={roomsLoader}  element={<Guard>
   
-  <Allrooms/>
- 
-</Guard>}/>
-<Route path='/Allcourses' loader={coursesLoader} element={<Guard>
-  
-  <AllCourses/>
-  
-</Guard>} />
 
-<Route path='/addnew' action={action} element={<Guard>
-  <AddNewCourse/>
-</Guard>}/>
-<Route path='/EditeCourse/:id' action={action} element={<Guard>
-  <EditeCourse/>
-</Guard>}/>
-<Route path="/course/:roomNumber/delete" action={deleteCourseAction} />
-  </Route>
-))
 
   return (
-    <RouterProvider router={routes}/>
-      
-/* 
-  <Navbar/>
-  <Routes>
-    <Route path='/' element={<Form/>} />
-    <Route path='/Home' element={
-      <Guard>
-      <RoleHome/>
-      </Guard>
-      }/>
-    <Route path='/allrooms' element={
-      <Guard>
-        <React.Suspense>
-      <Allrooms/>
-      </React.Suspense>
-      </Guard>}>
-      
-      </Route>
-    <Route path='/allrooms/editeroom/:roomNumber' element={
-      <Guard>
-      <Editeroom/>
-      </Guard>}/>
-    <Route path='/addnewroom' element={
-      <Guard>
-      <Addnewroom/>
-      </Guard>
-      }/>
-    <Route path='/Allcourses' element={
-      <Guard>
-        <React.Suspense>
-      <AllCourses/>
-      </React.Suspense>
-      </Guard>
-      }/>
-      <Route path='/details/:courseCode' element={
+    <>
+    
+    <Navbar/>
+    
+    <Routes>
+      <Route path='/' element={<Form/>} />
+      <Route path='/Home' element={
         <Guard>
-        <CourseDetails/>
+        <RoleHome/>
         </Guard>
-      }/>
-  </Routes> */
+        }/>
+ <Route
+  path='/allrooms'
+  element={
+    <Guard>
+      
+        <Allrooms />
+      
+    </Guard>
+  }
+/>
+      <Route path='/allrooms/editeroom/:roomNumber' element={
+        <Guard>
+        <Editeroom/>
+        </Guard>}/>
+      <Route path='/addnewroom' element={
+        <Guard>
+        <Addnewroom/>
+        </Guard>
+        }/>
+      <Route path='/Allcourses' element={
+        <Guard>
+          <React.Suspense>
+        <AllCourses/>
+        </React.Suspense>
+        </Guard>
+        }/>
+        <Route path='/details/:courseCode' element={
+          <Guard>
+          <CourseDetails/>
+          </Guard>
+        }/>
+    </Routes> 
+   
+    
+    </>
+      
+
 
   
 
