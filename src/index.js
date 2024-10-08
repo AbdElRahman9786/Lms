@@ -5,20 +5,24 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import LogInProvider from './Context/logInContext';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+
+const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
   <React.StrictMode>
-    
-    
-      <BrowserRouter>
+    <QueryClientProvider client={queryClient}>
       <LogInProvider>
-    <App />
-    </LogInProvider>
-    </BrowserRouter>
-    
-    
-    
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </LogInProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );
 

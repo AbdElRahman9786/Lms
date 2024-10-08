@@ -1,38 +1,60 @@
-import { Suspense, useState } from "react";
-import { Await, defer, Link,  redirect,  useFetcher,  useLoaderData, useNavigate, useNavigation,  } from "react-router-dom";
+import { useState } from "react";
+import {  Link   } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Loading from "../../Loading/Loading";
-import Swal from "sweetalert2";
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {  CircularProgress, Container  } from "@mui/material";
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import {  Container  } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
-import { getinitialdata } from "./hadelApi";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
+
 
 
 function Allrooms() {
   const [searchvalues, setSearchValues] = useState("");
   const [takenRooms, setTakenRooms] = useState([]);
-  const[more,setMore] = useState(true)
-  const [skip, setSkip] = useState(0);
+  const QueryClient=useQueryClient();
   let token = Cookies.get("token");
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
-      // Optional: Ensure the Content-Type is set if needed
+      
     },
   };
+  const mutation=useMutation({
+    mutationFn: async (roomNumber) => {
+      await axios.delete(`https://localhost:7015/api/ClassRoom/${roomNumber}`, config);
+    },
+    onSettled: () => {
+      QueryClient.invalidateQueries('rooms');
+      toast.success("Room deleted successfully");
+      
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+    throwOnError: true,
+  })
 
- const navigate=useNavigate();
 
-
-  const { isPending, isError, data, error } = useQuery({
+ async function getinitialdata({pageParam}){
+  
+  const response = await axios.get(`https://localhost:7015/api/ClassRoom/All?take=10&skip=${pageParam}`, config)
+  return response.data.data;
+  }
+  const { isPending, isError, data, error,fetchNextPage,isFetchingNextPage,hasNextPage } = useInfiniteQuery({
     queryKey: ['rooms'],
     queryFn: getinitialdata,
+    initialPageParam:0,
+    getNextPageParam:(LastPage,allPages)=>{
+      console.log({LastPage,allPages});
+      const nextPage=LastPage.length<10?undefined:allPages.length*10
+      return nextPage
+    }
   })
   if(isPending){
     return <Loading />;
@@ -58,8 +80,23 @@ function Allrooms() {
       )
       .catch((err) => console.log(err));
   }
+ 
 
-
+const content=data?.pages.map((rooms)=>rooms.map(room=>{
+  return(
+    <tr className="text-center even:bg-gray-100 odd:bg-white hover:bg-gray-50" key={room.roomNumber}>
+    <td className="px-4 py-2 border border-gray-300">{room.roomNumber}</td>
+    <td className="px-4 py-2 border border-gray-300">{room.building}</td>
+    <td className="px-4 py-2 border border-gray-300">{room.capacity}</td>
+    <td className="px-4 py-2 border border-gray-300">
+      <Button variant="contained"  color="primary">Edite</Button>
+      <Button variant="contained" startIcon={<DeleteIcon/>} color="error" onClick={()=>{
+        mutation.mutate(room.roomNumber);
+      }}>delete  </Button>
+      </td>
+  </tr>
+  )
+}))
   
   return (
     <>
@@ -101,23 +138,7 @@ function Allrooms() {
     </thead>
     <tbody>
       
-          {
-            
-             data.map((room)=>{
-              return(
-                <tr className="text-center even:bg-gray-100 odd:bg-white hover:bg-gray-50" key={room.roomNumber}>
-                <td className="px-4 py-2 border border-gray-300">{room.roomNumber}</td>
-                <td className="px-4 py-2 border border-gray-300">{room.building}</td>
-                <td className="px-4 py-2 border border-gray-300">{room.capacity}</td>
-                <td className="px-4 py-2 border border-gray-300">
-                  <Button variant="contained" startIcon={<ModeEditIcon/>} color="primary">Edite</Button>
-                  <Button variant="contained" startIcon={<DeleteIcon/>} color="error" >delete </Button>
-                  </td>
-              </tr>
-              )
-             })
-            }            
-
+      {content}
           
       
     </tbody>
@@ -126,8 +147,8 @@ function Allrooms() {
 
 <div className="w-full p-5 flex justify-center items-center">
      
-        <Button variant="contained" color="secondary">seeMore</Button>
-       
+      <Button disabled={!hasNextPage|| isFetchingNextPage} variant="contained" color="secondary" onClick={()=>fetchNextPage()}>{isFetchingNextPage?'loading...':hasNextPage?'lode more':'nothing more to load'}</Button>
+      
        </div>
         </div>
         
