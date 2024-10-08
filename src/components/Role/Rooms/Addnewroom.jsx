@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Cookies from 'js-cookie';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 
 function Addnewroom(){
     const [roomNumber,setRoomNumber]=useState('');
@@ -15,22 +16,36 @@ function Addnewroom(){
              
         }
     };
-    const handeladd=(e)=>{
-        e.preventDefault();
-        axios.post('https://localhost:7015/api/ClassRoom',{roomNumber,building,capacity},config)
-        .then(res=>{console.log(res)
-        navigate('/allrooms')}
-    ).catch(err=>console.log(err));
-    }
- 
+    const mutation=useMutation({
+        mutationKey: 'addroom',
+        mutationFn: async (data) => {
+            try {
+                return await axios.post('https://localhost:7015/api/ClassRoom', data, config);
+            } catch (error) {
+                console.error(error);
+                return null;
+            }
+        },
+        onSuccess: (data) => {
+            console.log('Room added successfully', data);
+            navigate('/Allrooms');
+        },
+        onError: (error) => {
+            console.error('Error adding room', error);
+        }
+     });
+    
+
    
     return(
         <>
-        <form onSubmit={handeladd}>
+        <form onSubmit={(e)=>e.preventDefault()}>
             <input type="number" placeholder="Enter room number"onChange={(e)=>setRoomNumber(e.target.value)} />
             <input type="number" placeholder="Enter room building" onChange={(e)=>setroombuilding(e.target.value)} />
             <input type="number" placeholder="Enter room capacity" onChange={(e)=>setroomCapacity(e.target.value)}/>
-            <button type="submit" >Add Room</button>
+            <button type="submit" onClick={()=>{
+                mutation.mutate({roomNumber,building,capacity});
+            }} >Add Room</button>
         </form>
         </>
     )

@@ -6,7 +6,7 @@ import {
     QueryClientProvider,
     
   } from '@tanstack/react-query'
-  const queryClient = new QueryClient()
+ 
 
 export default function Guard({children}){
     
@@ -20,10 +20,6 @@ if(!logIn){
 }
     },[])
 
-    return(
-        <QueryClientProvider client={queryClient}>
-        {children}
-        </QueryClientProvider>
-    );
+    return children;
 
 }
