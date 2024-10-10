@@ -64,8 +64,9 @@ function App() {
           <CourseDetails/>
           </Guard>
         }/>
+        
     </Routes> 
-   
+    
     
     </>
       

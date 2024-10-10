@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {  Link   } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -12,34 +12,53 @@ import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-q
 import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
 
-
+  import 'react-toastify/dist/ReactToastify.css';
 
 function Allrooms() {
   const [searchvalues, setSearchValues] = useState("");
-  const [takenRooms, setTakenRooms] = useState([]);
   const QueryClient=useQueryClient();
   let token = Cookies.get("token");
+  
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
       
     },
   };
-  const mutation=useMutation({
+
+  
+  const deletmutation=useMutation({
     mutationFn: async (roomNumber) => {
       await axios.delete(`https://localhost:7015/api/ClassRoom/${roomNumber}`, config);
     },
-    onSettled: () => {
-      QueryClient.invalidateQueries('rooms');
-      toast.success("Room deleted successfully");
+      onSuccess: () => {
+   
+        QueryClient.invalidateQueries('rooms'); 
+
+      
       
     },
     onError: (err) => {
-      console.log(err);
+      alert(err.message);
     },
-    throwOnError: true,
+    
   })
-
+const searchMutation=useMutation({
+  mutationKey: 'Searchrooms',
+    mutationFn: async () => {
+      
+         await axios.get(`https://localhost:7015/api/ClassRoom/Search?searchQuery=${searchvalues}`, config);
+     
+    },
+    onSuccess: (data) => {
+      
+    
+    },
+    onError: (err) => {
+      alert(err.message);
+    },
+  
+})
 
  async function getinitialdata({pageParam}){
   
@@ -51,47 +70,32 @@ function Allrooms() {
     queryFn: getinitialdata,
     initialPageParam:0,
     getNextPageParam:(LastPage,allPages)=>{
-      console.log({LastPage,allPages});
+      
       const nextPage=LastPage.length<10?undefined:allPages.length*10
       return nextPage
-    }
+    },
+    
   })
   if(isPending){
     return <Loading />;
   }
   if(isError){
-    return <p>Error: {error.message}</p>;
-  }
-  function handelSearch(e) {
-    e.preventDefault();
-    
-    axios
-      .get(
-        `https://localhost:7015/api/ClassRoom/Search?searchQuery=${searchvalues}`,
-        config
-      )
-      .then((res) =>
-        setTakenRooms(
-            res.data.data
-          )
-
-        
-        
-      )
-      .catch((err) => console.log(err));
+    return(
+      <p className=" text-center">no more data</p>
+    )
   }
  
 
 const content=data?.pages.map((rooms)=>rooms.map(room=>{
   return(
     <tr className="text-center even:bg-gray-100 odd:bg-white hover:bg-gray-50" key={room.roomNumber}>
-    <td className="px-4 py-2 border border-gray-300">{room.roomNumber}</td>
-    <td className="px-4 py-2 border border-gray-300">{room.building}</td>
-    <td className="px-4 py-2 border border-gray-300">{room.capacity}</td>
-    <td className="px-4 py-2 border border-gray-300">
-      <Button variant="contained"  color="primary">Edite</Button>
-      <Button variant="contained" startIcon={<DeleteIcon/>} color="error" onClick={()=>{
-        mutation.mutate(room.roomNumber);
+    <td className={`px-4 py-2 border border-gray-300`}> {room.roomNumber}</td>
+    <td className={`px-4 py-2 border border-gray-300`}>{room.building}</td>
+    <td className={`px-4 py-2 border border-gray-300`}>{room.capacity}</td>
+    <td className={`px-4 py-2 border border-gray-300`}>
+      <Button variant="contained"  color="primary"><Link to={`/allrooms/editeroom/${room.roomNumber}`}>Edite</Link></Button>
+      <Button variant="contained" disabled={deletmutation.isPending} startIcon={<DeleteIcon/>} color="error" onClick={()=>{
+        deletmutation.mutate(room.roomNumber);
       }}>delete  </Button>
       </td>
   </tr>
@@ -100,11 +104,12 @@ const content=data?.pages.map((rooms)=>rooms.map(room=>{
   
   return (
     <>
+
       <Container >
 
        
       <div className="p-10  ">
-        <form onSubmit={handelSearch} className="mb-9 w-1/2 mx-auto flex justify-center items-center ">
+        <form onSubmit={(e)=>e.preventDefault()} className="mb-9 w-1/2 mx-auto flex justify-center items-center ">
           <TextField
             type="number"
             name="searchQuery"
@@ -113,8 +118,8 @@ const content=data?.pages.map((rooms)=>rooms.map(room=>{
             fullWidth
             label="Enter search values"
           />
-          <Button type="submit" size="large" onSubmit={()=>handelSearch} variant="contained" color="info" >
-          <SearchIcon />
+          <Button type="submit" size="large" onClick={()=>searchMutation.mutate()} variant="contained" color="info" >
+          {searchMutation.isLoading ? "Searching..." : "Search"} <SearchIcon />
           </Button>
          
         </form>
@@ -139,7 +144,6 @@ const content=data?.pages.map((rooms)=>rooms.map(room=>{
     <tbody>
       
       {content}
-          
       
     </tbody>
   </table>
